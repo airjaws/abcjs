@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>악보 편집 — devstudio</title>
+<!-- devstudio 포팅(RTM R-J27): abcjs 편집기(ABCJS.Editor) 위의 악보 편집 페이지. 명령은 score-bridge.js(window.__score) -->
+<link rel="stylesheet" href="../abcjs-audio.css">
+<style>
+  :root { --bg:#fbfbfa; --fg:#1d232b; --muted:#5d6672; --line:#d9dde3; --raised:#fff; --warn:#a85b00; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.5 system-ui, "Malgun Gothic", sans-serif; height: 100vh; display: grid; grid-template-columns: minmax(280px, 34%) 1fr; }
+  #left { display: flex; flex-direction: column; border-right: 1px solid var(--line); min-height: 0; }
+  #left header { padding: 8px 12px; border-bottom: 1px solid var(--line); font-weight: 600; }
+  #abc { flex: 1; resize: none; border: 0; padding: 10px 12px; font: 13px/1.5 ui-monospace, Consolas, monospace; background: var(--raised); color: var(--fg); outline: none; }
+  #warnings { color: var(--warn); font-size: 12px; padding: 6px 12px; min-height: 24px; border-top: 1px solid var(--line); white-space: pre-wrap; }
+  #right { overflow: auto; padding: 12px; background: #fff; }
+  #audio { margin-bottom: 8px; }
+</style>
+</head>
+<body>
+  <section id="left">
+    <header>문자 악보(ABC)</header>
+    <textarea id="abc" spellcheck="false">X:1
+T:새 악보
+M:4/4
+L:1/8
+Q:1/4=110
+K:C
+CDEF GABc | c2B2 A2G2 | FEDC D2E2 | C8 |]</textarea>
+    <div id="warnings"></div>
+  </section>
+  <section id="right">
+    <div id="audio"></div>
+    <div id="paper"></div>
+  </section>
+  <script src="../dist/abcjs-basic.js"></script>
+  <script>
+    window.scoreEditor = new ABCJS.Editor('abc', {
+      canvas_id: 'paper', warnings_id: 'warnings',
+      synth: { el: '#audio', options: { displayLoop: true, displayRestart: true, displayPlay: true, displayProgress: true } },
+      abcjsParams: { add_classes: true, responsive: 'resize' }
+    });
+  </script>
+  <script src="score-bridge.js"></script>
+</body>
+</html>
