@@ -30,19 +30,24 @@
     ((k && k.accidentals) || []).forEach(function (a) { out[String(a.note).toUpperCase()] = a.acc; });
     return out;
   }
-  // MIDI 음높이 → ABC 음표(조표 반영)
+  // 같은 마디(커서 앞, 마지막 | 뒤)에서 이 음높이(글자+옥타브 표기)에 붙은 마지막 임시표 — ABC 는 임시표가 마디 끝까지 간다
+  function barAcc(noteBody) {
+    var el = ta(), v = el.value.slice(0, el.selectionStart === undefined ? el.value.length : el.selectionStart);
+    var seg = v.slice(v.lastIndexOf('|') + 1), re = /(\^\^|\^|__|_|=)?([A-Ga-g][,']*)/g, m, last = null;
+    while ((m = re.exec(seg))) { if (m[2] === noteBody && m[1]) { last = m[1] === '^' || m[1] === '^^' ? 'sharp' : m[1] === '=' ? 'natural' : 'flat'; } }
+    return last;
+  }
+  // MIDI 음높이 → ABC 음표 — 지금 효력 있는 임시표(같은 마디 > 조표)와 비교해 필요한 표만 붙인다
   function pitchText(midi) {
-    var pc = ((midi % 12) + 12) % 12, oct = Math.floor(midi / 12) - 1, acc = keyAcc(), letter, mark = '';
+    var pc = ((midi % 12) + 12) % 12, oct = Math.floor(midi / 12) - 1, acc = keyAcc(), letter, want;
     if (BLACK[pc]) {
       var flatKey = Object.keys(acc).some(function (x) { return acc[x] === 'flat'; });
-      if (flatKey) { letter = FLAT_OF[pc]; mark = acc[letter] === 'flat' ? '' : '_'; }
-      else { letter = LETTERS[pc]; mark = acc[letter] === 'sharp' ? '' : '^'; }
-    } else {
-      letter = LETTERS[pc]; mark = acc[letter] ? '=' : '';   // 조표가 바꾼 음의 흰 건반 = 제자리
-    }
-    // 흰 건반 B 의 옥타브는 그대로, b 로 쓴 검은 건반(예: Db)도 같은 옥타브 — C 기준 옥타브 번호
-    var s = oct >= 5 ? letter.toLowerCase() + new Array(oct - 4).join("'") : letter + new Array(Math.max(0, 4 - oct) + 1).join(',');
-    return mark + s;
+      if (flatKey) { letter = FLAT_OF[pc]; want = 'flat'; } else { letter = LETTERS[pc]; want = 'sharp'; }
+    } else { letter = LETTERS[pc]; want = 'natural'; }
+    var body = oct >= 5 ? letter.toLowerCase() + new Array(oct - 4).join("'") : letter + new Array(Math.max(0, 4 - oct) + 1).join(',');
+    var now = barAcc(body) || acc[letter] || 'natural';   // 효력 있는 상태
+    var mark = now === want ? '' : want === 'sharp' ? '^' : want === 'flat' ? '_' : '=';
+    return mark + body;
   }
   // 커서 위치에 넣기 — 앞 글자가 음표면 띄어 쓴다(빔을 원하면 사람이 붙이면 됨)
   function insert(text) {
