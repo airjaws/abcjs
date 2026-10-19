@@ -62,7 +62,7 @@
   function play(midi) {
     if (!state.play || !w.ABCJS || !w.ABCJS.synth || !w.ABCJS.synth.playEvent) { return; }
     var len = frac(state.len) * (state.dot ? 1.5 : 1);
-    try { w.ABCJS.synth.playEvent([{ pitch: midi, volume: 90, start: 0, duration: Math.min(1, len * 2), instrument: 0 }], [], 1000).catch(function () {}); } catch (e) { /* 소리는 선택 */ }
+    try { w.ABCJS.synth.playEvent([{ pitch: midi, volume: 90, start: 0, duration: Math.min(1, len * 2), instrument: 0 }], [], 1000, new URL('soundfonts/FluidR3_GM/', location.href).href).catch(function () {}); } catch (e) { /* 소리는 선택 */ }
   }
 
   var api = {

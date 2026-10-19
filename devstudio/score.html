@@ -51,7 +51,8 @@ CDEF GABc | c2B2 A2G2 | FEDC D2E2 | C8 |]</textarea>
   <script>
     window.scoreEditor = new ABCJS.Editor('abc', {
       canvas_id: 'paper', warnings_id: 'warnings',
-      synth: { el: '#audio', options: { displayLoop: true, displayRestart: true, displayPlay: true, displayProgress: true } },
+      // 소리 샘플은 포크 안 devstudio/soundfonts(피아노) — 133 인터넷 없이
+      synth: { el: '#audio', options: { displayLoop: true, displayRestart: true, displayPlay: true, displayProgress: true, soundFontUrl: new URL('soundfonts/FluidR3_GM/', location.href).href } },
       abcjsParams: { add_classes: true, responsive: 'resize' }
     });
   </script>
