@@ -57,6 +57,16 @@
       });
     },
     svg: function () { var s = document.querySelector('#paper svg'); if (!s) { throw new Error('그려진 악보가 없습니다'); } return new XMLSerializer().serializeToString(s); },
+    // 미니 피아노 입력(사람이 건반을 누른 것과 같은 함수) — keys: [{pitch, len, dot}] 또는 {rest:true,len} 또는 {bar:true}
+    piano: async function (keys) {
+      var p = w.scorePiano, old = ed().tunes && ed().tunes[0], out = [];
+      p.state.play = false;   // 화면 없는 편집기에서는 소리 안 냄
+      try {
+        (keys || []).forEach(function (k) { out.push(k.bar ? p.bar() : k.rest ? p.rest(k.len, k.dot) : p.press(k.pitch, k.len, k.dot)); });
+      } finally { p.state.play = true; }
+      for (var i = 0; i < 100 && ed().tunes && ed().tunes[0] === old; i++) { await new Promise(function (r) { setTimeout(r, 30); }); }
+      return { inserted: out.map(function (x) { return x.inserted; }).join(''), info: api.info() };
+    },
     midi: function () {
       var bin = w.ABCJS.synth.getMidiFile(ta().value, { midiOutputType: 'binary' })[0];
       var s = ''; for (var i = 0; i < bin.length; i++) { s += String.fromCharCode(bin[i]); }

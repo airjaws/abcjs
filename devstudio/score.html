@@ -15,6 +15,18 @@
   #abc { flex: 1; resize: none; border: 0; padding: 10px 12px; font: 13px/1.5 ui-monospace, Consolas, monospace; background: var(--raised); color: var(--fg); outline: none; }
   #warnings { color: var(--warn); font-size: 12px; padding: 6px 12px; min-height: 24px; border-top: 1px solid var(--line); white-space: pre-wrap; }
   #right { overflow: auto; padding: 12px; background: #fff; }
+  /* 미니 피아노 */
+  #piano { border-top: 1px solid var(--line); padding: 8px 12px 10px; background: var(--raised); }
+  #piano .pbar { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin-bottom: 8px; }
+  #piano button { font: inherit; font-size: 12px; padding: 3px 8px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); color: var(--fg); cursor: pointer; }
+  #piano button.on { background: #2f6fb3; color: #fff; border-color: #2f6fb3; }
+  #piano .oct { font-size: 12px; color: var(--muted); min-width: 52px; text-align: center; margin-right: 6px; }
+  #piano .keys { position: relative; height: 96px; max-width: 100%; overflow-x: auto; user-select: none; }
+  #piano .k { position: absolute; top: 0; box-sizing: border-box; cursor: pointer; border-radius: 0 0 4px 4px; }
+  #piano .white { width: 28px; height: 96px; background: #fff; border: 1px solid #9aa3ad; z-index: 1; }
+  #piano .black { width: 18px; height: 58px; background: #1d232b; z-index: 2; }
+  #piano .k.down, #piano .white:active { background: #cfe2f7; } #piano .black.down, #piano .black:active { background: #2f6fb3; }
+  #piano .k span { position: absolute; bottom: 4px; left: 0; right: 0; text-align: center; font-size: 10px; color: var(--muted); }
   #audio { margin-bottom: 8px; }
 </style>
 </head>
@@ -29,6 +41,7 @@ Q:1/4=110
 K:C
 CDEF GABc | c2B2 A2G2 | FEDC D2E2 | C8 |]</textarea>
     <div id="warnings"></div>
+    <div id="piano" aria-label="미니 피아노 — 누르면 커서 위치에 음을 넣는다"></div>
   </section>
   <section id="right">
     <div id="audio"></div>
@@ -42,6 +55,7 @@ CDEF GABc | c2B2 A2G2 | FEDC D2E2 | C8 |]</textarea>
       abcjsParams: { add_classes: true, responsive: 'resize' }
     });
   </script>
+  <script src="piano.js"></script>
   <script src="score-bridge.js"></script>
 </body>
 </html>
